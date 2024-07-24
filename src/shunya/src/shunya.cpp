@@ -60,7 +60,9 @@ void Shunya::setup()
     command = new sslsim::SimulatorCommand();
     sslsim::SimulatorControl *control = command->mutable_control();
     auto bot = control->mutable_teleport_robot();
-    setBotPosition(bot, 0, 1, 1);
+
+    //initial position of the bots can be set here
+    setBotPosition(bot, 0, 0, 0);
     setBotPosition(bot, 1, 1,-1);
     setBotPosition(bot, 2, 1.5,0);
     setBotPosition(bot, 3, 1.5,1);
@@ -89,7 +91,7 @@ void Shunya::setBotPosition(google::protobuf::RepeatedPtrField<sslsim::TeleportR
     bot_pos->set_x(x);
     bot_pos->set_y(y);
     bot_pos->set_present(true);
-    bot_pos->set_by_force(false);
+    bot_pos->set_by_force(true);
     bot_pos->set_orientation(orientation);
 
 }
