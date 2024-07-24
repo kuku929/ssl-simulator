@@ -97,11 +97,11 @@ void Kshetra::handleState(QByteArray *buffer)
                     qDebug() << "yellow bots not there! paying respects";
                 }
                 bots_init_ = true;
+                setScene(scene);
             }
 
 
         }
-        setScene(scene);
     }
 }
 
