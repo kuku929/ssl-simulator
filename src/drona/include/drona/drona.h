@@ -23,7 +23,7 @@ public slots:
 
 private:
     sslsim::RobotCommand *command;
-	quint16 _port;
+    quint16 _port;
     quint16 _port_sim;
     QHostAddress _addr_sim;
 	QHostAddress _addr;
@@ -33,7 +33,6 @@ private:
     
 signals:
 	// void configureBots();
-    void recieved(const char[]);
 };
 
 #endif // DRONA_H

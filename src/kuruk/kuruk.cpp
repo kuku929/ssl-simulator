@@ -1,9 +1,5 @@
 #include "kuruk.h"
 #include "ui_kuruk.h"
-// #include "vyasa/vyasa.h"
-// #include "drona/drona.h"
-#include "vyasa/vyasa.h"
-#include "drona/drona.h"
 
 Kuruk::Kuruk(QWidget *parent)
     : QMainWindow{parent},
@@ -24,7 +20,9 @@ Kuruk::~Kuruk(){
     delete ui;
     delete vyasa;
     delete shunya;
+    delete drona;
     ui = nullptr;
     vyasa = nullptr;
     shunya = nullptr;
+    drona = nullptr;
 }

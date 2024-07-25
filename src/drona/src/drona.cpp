@@ -14,7 +14,6 @@ Drona::Drona(QObject* parent) : QObject(parent), socket(new QUdpSocket(this)){
 
 Drona::~Drona(){
     delete socket;
-    delete command;
 }
 
 void Drona::onSocketError(QAbstractSocket::SocketError socketError)
@@ -51,7 +50,7 @@ void Drona::moveToPosition(int id, float x, float y) {
     command->set_id(id);
     sslsim::RobotMoveCommand *move_command = command->mutable_move_command();
     sslsim::MoveLocalVelocity *local_velocity = move_command->mutable_local_velocity();
-    local_velocity->set_forward(-1.0f);
+    local_velocity->set_forward(-10.0f);
     local_velocity->set_angular(0.0f);
     local_velocity->set_left(0.0f);
 }
@@ -72,7 +71,6 @@ void Drona::sendCommand(float velX, int id) {
     QByteArray dgram;
     dgram.resize(packet.ByteSize());
     packet.SerializeToArray(dgram.data(), dgram.size());
-    // todo : this will probably not work since socket in bounded, use write()
     if (socket->writeDatagram(dgram, this->_addr_sim, this->_port_sim) > -1) {
         qDebug("send data");
     }
