@@ -10,23 +10,6 @@ using namespace sslsim;
 Drona::Drona(QObject* parent) : QObject(parent), socket(new QUdpSocket(this)){
     // create a QUDP socket
 
-    this->_addr.setAddress(SSL_VISION_ADDRESS);
-    this->_port = quint16(SSL_SIMULATED_VISION_PORT);
-
-    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-
-    //the problem is with qudpsocket since the slot is being called fine
-    socket->bind(QHostAddress::AnyIPv4, 10020, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-    if(socket->state() != QAbstractSocket::BoundState){
-        qDebug() << "socket not bound";
-    }
-
-    // new syntax, do not use SIGNAL() and SLOT()
-    // auto success = connect(socket, &QUdpSocket::readyRead);
-    // if(!success){
-    //     qDebug() << socket->errorString();
-    // }
-    // qDebug() << socket->bytesAvailable();
 }
 
 Drona::~Drona(){
@@ -46,9 +29,8 @@ void Drona::setPortAndAddress(int port, const QString& address) {
 
 void Drona::run() {
     RobotControl robot_control;
-    RobotCommand *command = robot_control.add_robot_commands();
-    moveToPosition(command->mutable_move_command(), 0, 1, 1);
-    //sendCommand(2.0f, 0);
+    command = robot_control.add_robot_commands();
+    moveToPosition(0, 1.0f, 1.0f);
 
     //TODO: create the robot command and add RobotMoveCommand with wheel velocities
 
@@ -57,20 +39,21 @@ void Drona::run() {
     QByteArray dgram;
     dgram.resize(robot_control.ByteSize());
     robot_control.SerializeToArray(dgram.data(), dgram.size());
-    if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_PORT) > -1) {
+    if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_BLUE_PORT) > -1) {
         qDebug("[drona] : sent data");
     }
 }
 
 
-void Drona::moveToPosition(sslsim::RobotMoveCommand *move_command, int id, float x, float y) {
+void Drona::moveToPosition(int id, float x, float y) {
+    // Wheel and Global Velocities not yet supported, only Local Velocity supported
+    //TODO: Write interpreter for wheel velocity
     command->set_id(id);
-    // sslsim::RobotMoveCommand *move_command = command->mutable_move_command();
-    sslsim::MoveWheelVelocity *wheel_velocity = move_command->mutable_wheel_velocity();
-    wheel_velocity->set_front_right(1.0f);
-    wheel_velocity->set_front_left(-1.0f);
-    wheel_velocity->set_back_left(-1.0f);
-    wheel_velocity->set_back_right(1.0f);
+    sslsim::RobotMoveCommand *move_command = command->mutable_move_command();
+    sslsim::MoveLocalVelocity *local_velocity = move_command->mutable_local_velocity();
+    local_velocity->set_forward(-1.0f);
+    local_velocity->set_angular(0.0f);
+    local_velocity->set_left(0.0f);
 }
 
 void Drona::sendCommand(float velX, int id) {

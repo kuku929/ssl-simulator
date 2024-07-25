@@ -14,7 +14,7 @@ public:
     explicit Drona(QObject *parent = 0);
     void setPortAndAddress(int port, const QString& address);
     void sendCommand(float velX, int id);
-    void moveToPosition(sslsim::RobotMoveCommand *move_command, int id, float x, float y);
+    void moveToPosition(int id, float x, float y);
     ~Drona();
     
 public slots:
