@@ -5,6 +5,7 @@
 #include <cmath>
 #define BALL_RADIUS 5
 #define ROBOT_RADIUS 10
+#define LOG qDebug() << "[kshetra] : "
 Kshetra::Kshetra(QWidget *parent):
     QGraphicsView(parent),
     painter(new QPainter()),
@@ -46,12 +47,10 @@ void Kshetra::handleState(QByteArray *buffer)
             //drawing ball
             if(state.detection().balls_size() != 0){
                 ball = state.detection().balls(0);
+                setBall(transformToScene(QPoint(ball.x(), ball.y())));
             }else{
-                //if ball not received use the last ball position
-                qDebug() << "ball not there! paying respects";
+                LOG << "ball not there! paying respects";
             }
-            //if the first packet does not have ball position then scam will happen
-            setBall(transformToScene(QPoint(ball.x(), ball.y())));
 
             //drawing robots
             if(bots_init_){ // if bots are already placed, just update their position
@@ -60,10 +59,15 @@ void Kshetra::handleState(QByteArray *buffer)
                     pandav = state.detection().robots_blue();
                     for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
                         auto bot = std::find_if(scene_pandav.begin(), scene_pandav.end(), [&](Bot b){return b.id == itr->robot_id();});
+                        if(bot == scene_pandav.end()){
+                            LOG << "adding robot " << itr->robot_id();
+                            scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
+                            continue;
+                        }
                         bot->updatePosition(transformToScene(QPoint(itr->x(), itr->y())), itr->orientation());
                     }
                 }else{
-                    qDebug() << "blue bots not there! paying respects";
+                    LOG << "blue bots not there! paying respects";
                 }
 
                 //yellow bots
@@ -71,12 +75,17 @@ void Kshetra::handleState(QByteArray *buffer)
                     kaurav = state.detection().robots_yellow();
                     for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
                         auto bot = std::find_if(scene_kaurav.begin(), scene_kaurav.end(), [&](Bot b){return b.id == itr->robot_id();});
+                        if(bot == scene_kaurav.end()){
+                            LOG << "adding robot " << itr->robot_id();
+                            scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
+                            continue;
+                        }
                         bot->updatePosition(transformToScene(QPoint(itr->x(), itr->y())), itr->orientation());
                     }
                 }else{
-                    qDebug() << "yellow bots not there! paying respects";
+                    LOG << "yellow bots not there! paying respects";
                 }
-            }else{ // initialize the bots
+            }else{
                 //blue bots
                 if(state.detection().robots_blue_size() != 0){
                     pandav = state.detection().robots_blue();
@@ -84,7 +93,7 @@ void Kshetra::handleState(QByteArray *buffer)
                         scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
                     }
                 }else{
-                    qDebug() << "blue bots not there! paying respects";
+                    LOG << "blue bots not there! paying respects";
                 }
 
                 //yellow bots
@@ -94,12 +103,11 @@ void Kshetra::handleState(QByteArray *buffer)
                         scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
                     }
                 }else{
-                    qDebug() << "yellow bots not there! paying respects";
+                    LOG << "yellow bots not there! paying respects";
                 }
                 bots_init_ = true;
                 setScene(scene);
             }
-
 
         }
     }

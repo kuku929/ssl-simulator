@@ -2,6 +2,7 @@
 #include "core/sslprotocols.h"
 #include "protobuf/ssl_simulation_error.pb.h"
 #include <QNetworkDatagram>
+#define LOG qDebug() << "[shunya] : "
 
 Shunya::Shunya(QObject *parent)
     : QObject{parent},
@@ -9,30 +10,34 @@ Shunya::Shunya(QObject *parent)
     command(new sslsim::SimulatorCommand())
 {
 
+    /*
+     * uncomment this for debugging only, for some reason it occupies the whole loop
+     */
+
     // this->_addr.setAddress(SSL_VISION_ADDRESS_LOCALHOST);
     // this->_port = quint16(SSL_SIMULATED_VISION_PORT);
     // // if socket fails to connect
     // connect(socket, &QAbstractSocket::errorOccurred,this, &Shunya::onSocketError);
     // socket->bind(_addr, _port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     // if(socket->state() != QAbstractSocket::BoundState){
-    //     qDebug() << "socket not bound";
+    //     LOG << "socket not bound";
     // }
     // // new syntax, do not use SIGNAL() and SLOT()
     // auto success = connect(socket, &QUdpSocket::readyRead, this, &Shunya::handleDatagrams);
-    // if(!success){ qDebug() << socket->errorString();}
+    // if(!success){ LOG << socket->errorString();}
 
 }
 
 void Shunya::onSocketError(QAbstractSocket::SocketError socketError)
 {
-    qDebug()<<"[shunya] : socket error occured and the error is : "<<socketError;
+    LOG<<"socket error occured and the error is : "<<socketError;
 }
 
 void Shunya::handleDatagrams()
 {
 // when data comes in
     while(socket->hasPendingDatagrams()){
-        qDebug() << "[shunya] : simulator error ";
+        LOG << "simulator error ";
         auto datagram = socket->receiveDatagram();
         auto buffer = datagram.data();
 
@@ -42,7 +47,7 @@ void Shunya::handleDatagrams()
                 break;
             }
             for(auto itr=error.errors().begin(); itr != error.errors().end(); itr++){
-                qDebug() << QString(itr->message().data());
+                LOG << QString(itr->message().data());
             }
         }
     }
@@ -73,7 +78,7 @@ void Shunya::setup()
 
     //sending message
     if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_PORT) > -1) {
-        qDebug("[shunya] : sent data");
+        LOG << "sent data";
     }
 }
 

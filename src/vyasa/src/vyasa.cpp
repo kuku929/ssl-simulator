@@ -5,6 +5,7 @@
 #include <QString>
 #include <QUdpSocket>
 #include <QNetworkDatagram>
+#define LOG qDebug() << "[vyasa] : "
 
 Vyasa::Vyasa(QObject* parent) : QObject(parent), socket(new QUdpSocket(this))
 {
@@ -18,13 +19,13 @@ Vyasa::Vyasa(QObject* parent) : QObject(parent), socket(new QUdpSocket(this))
     //the problem is with qudpsocket since the slot is being called fine
     socket->bind(_addr, _port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
     if(socket->state() != QAbstractSocket::BoundState){
-        qDebug() << "socket not bound";
+        LOG << "socket not bound";
     }
 
     // new syntax, do not use SIGNAL() and SLOT()
     auto success = connect(socket, &QUdpSocket::readyRead, this, &Vyasa::handleDatagrams);
     if(!success){
-        qDebug() << socket->errorString();
+        LOG << socket->errorString();
     }
 }
 
@@ -35,7 +36,7 @@ Vyasa::~Vyasa()
 
 void Vyasa::onSocketError(QAbstractSocket::SocketError socketError)
 {
-    qDebug()<<"[vyasa] : socket error occured and the error is : "<<socketError;
+    LOG<<"socket error occured and the error is : "<<socketError;
 }
 
 void Vyasa::setPortAndAddress(int port, const QString& address)
