@@ -46,6 +46,8 @@
 
 #include "ssl_robocup_server.h"
 
+#define LOG qDebug() << "[simulator] : "
+
 /**
  * Stand alone Erforce simulator
  *
@@ -536,7 +538,9 @@ void RobotCommandAdaptor::handleDatagrams()
 
         for (const auto& command : control->robot_commands()) {
             if (command.has_move_command()) {
+                LOG << "recieved command";
                 const auto& moveCmd = command.move_command();
+                LOG << moveCmd.local_velocity().forward();
                 if (moveCmd.has_wheel_velocity() || moveCmd.has_global_velocity()) {
                     sendRcr = true;
                     const std::string robotStr = "(Robot :" + std::to_string(command.id()) + ")";
