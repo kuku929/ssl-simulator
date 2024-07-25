@@ -5,6 +5,7 @@
 #include "ui_kuruk.h"
 #include "vyasa/vyasa.h"
 #include "shunya/shunya.h"
+#include "drona/drona.h"
 
 class Kuruk : public QMainWindow
 {
@@ -17,6 +18,7 @@ private:
     Ui::kuruk *ui;
     Vyasa *vyasa;
     Shunya *shunya;
+    Drona *drona;
 signals:
     // void configureBots();
 };

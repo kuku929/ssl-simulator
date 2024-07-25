@@ -1,0 +1,23 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/zed_interfaces/local/lib/python3.10/dist-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/zed_ground_plane/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/lane_change/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/gps_nav/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/basic_robot/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/zed_interfaces/local/lib/python3.10/dist-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/zed_ground_plane/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/lane_change/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/gps_nav/lib/python3.10/site-packages",
+        "/home/mahesh/Documents/lidar-odom/ros2_ws/install/basic_robot/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "files.associations": {
+        "qudpsocket": "cpp"
+    }
+}
