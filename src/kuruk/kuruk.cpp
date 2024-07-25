@@ -10,8 +10,7 @@ Kuruk::Kuruk(QWidget *parent)
 {
     ui->setupUi(this);
     connect(vyasa, &Vyasa::recievedState, ui->kshetra, &Kshetra::handleState);
-    // connect(this, &Kuruk::configureBots, shunya, &Shunya::setup);
-    // emit configureBots();
+    connect(ui->actionreset, &QAction::triggered, shunya, &Shunya::setup);
     shunya->setup();
 }
 
