@@ -1,20 +1,56 @@
 #include "drona.h"
 #include <QString>
 #include <QNetworkDatagram>
+#include <math.h>
 #define LOG qDebug() << "[drona] : "
+
 
 using namespace sslsim;
 Drona::Drona(QObject* parent) : QObject(parent),
     sender(new Dhanush())
 {
     sender->moveToThread(&sender_thread);
-    connect(this, &Drona::send, sender, &Dhanush::send_velocity);
+    // connect(this, &Drona::send, sender, &Dhanush::send_velocity);
     sender_thread.setObjectName("sender");
     sender_thread.start();
     // allocate the sender to a separate thread
 
 }
 
+void Drona::moveToPosition(float x, float y)
+{
+    float curr_x, curr_y;
+
+    // updating the current position of the bot
+    if (1==1)
+    {
+        curr_x = std::get<0>(blue_bot_info[0]);
+        curr_y = std::get<1>(blue_bot_info[0]);
+    }
+    else
+    {
+        curr_x = std::get<0>(yellow_bot_info[0]);
+        curr_y = std::get<1>(yellow_bot_info[0]);
+    }
+
+    // calculating the x and y velocities
+    float kp;
+    float err_x = x - curr_x;
+    float err_y = y - curr_y;
+    float dist_err = sqrt(pow(err_x, 2) + pow(err_y, 2));
+
+    float vel_y = kp * err_y;
+    float vel_x = kp * err_x;
+    std::vector<bot_packet> packets;
+    bot_packet packet;
+    packet.vel_angular = 0.0f;
+    packet.vel_x = vel_x;
+    packet.vel_y = vel_y;
+    packet.id = 0;
+    packets.push_back(packet);
+    emit send(packets);
+
+}
 
 void Drona:: handleState(QByteArray *buffer)
 {
@@ -44,6 +80,8 @@ void Drona:: handleState(QByteArray *buffer)
             }
 
         }
+
+        moveToPosition(0.0, 0.0);
     }
 }
 

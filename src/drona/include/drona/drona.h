@@ -34,11 +34,17 @@ private:
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
     bool has_state_;
-    std::map<int, Bot> blue_bots;
-    std::map<int, Bot> yellow_bots;
+    std::map<int, std::tuple<float, float>> blue_bot_info;
+    std::map<int, std::tuple<float, float>> yellow_bot_info;
+    struct bot_packet{
+        float vel_x, vel_y, vel_angular;
+        int id;
+        bool is_blue;
+    };
+    void moveToPosition(float x, float y);
 
 signals:
-    void send();
+    void send(std::vector<bot_packet> packets);
 public slots:
     void handleState(QByteArray *buffer);
 };
