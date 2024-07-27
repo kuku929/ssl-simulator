@@ -1,5 +1,6 @@
 #include "dhanush.h"
 #include "core/sslprotocols.h"
+#include <math.h>
 #define LOG qDebug() << "[dhanush] : "
 using namespace sslsim;
 
@@ -31,14 +32,65 @@ void Dhanush::send_velocity()
     }
 }
 
-void Dhanush::moveToPosition(int id, float x, float y)
+void Dhanush::moveToPosition(Bot& robot, float x, float y)
 {
+    float curr_x, curr_y;
+
+    // updating the current position of the bot
+    if (is_blue)
+    {
+        curr_x = get<0>(blue_bots[id]);
+        curr_y = get<1>(blue_bots[id]);
+    }
+    else
+    {
+        curr_x = get<0>(yellow_bot_info[id]);
+        curr_y = get<1>(yellow_bot_info[id]);
+    }
+
+
+    float kp;
+    float err_x = x - curr_x;
+    float err_y = y - curr_y;
+    float dist_err = sqrt(pow(err_x, 2) + pow(err_y, 2));
+
     // Wheel and Global Velocities not yet supported, only Local Velocity supported
     //TODO: Write interpreter for wheel velocity
     command->set_id(id);
     sslsim::RobotMoveCommand *move_command = command->mutable_move_command();
     sslsim::MoveLocalVelocity *local_velocity = move_command->mutable_local_velocity();
-    local_velocity->set_forward(-10.0f);
+    local_velocity->set_forward(kp * err_y);
     local_velocity->set_angular(0.0f);
-    local_velocity->set_left(0.0f);
+    local_velocity->set_left(kp * err_x);
+}
+
+void Dhanush:: handleState(QByteArray *buffer)
+{
+    if(state.ParseFromArray(buffer->data(), buffer->size())){
+        has_state_ = true;
+        if(state.has_detection()){
+            // updating blue bots positions
+            if(state.detection().robots_blue_size() != 0){
+                pandav = state.detection().robots_blue();
+                for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
+                    std::tuple<float, float> info(itr->x(), itr->y());
+                    blue_bot_info[itr->robot_id()] = info;
+                }
+            }else{
+                LOG << "blue bots not there! paying respects";
+            }
+
+            // updating yellow bots positions
+            if(state.detection().robots_yellow_size() != 0){
+                kaurav = state.detection().robots_yellow();
+                for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
+                    std::tuple<float, float> info(itr->x(), itr->y());
+                    yellow_bot_info[itr->robot_id()] = info;
+                }
+            }else{
+                LOG << "yellow bots not there! paying respects";
+            }
+
+        }
+    }
 }

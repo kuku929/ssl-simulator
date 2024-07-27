@@ -15,60 +15,36 @@ Drona::Drona(QObject* parent) : QObject(parent),
 
 }
 
-void Drona::handleState(QByteArray *buffer)
+
+void Drona:: handleState(QByteArray *buffer)
 {
-    //slot when message received by vyasa, draws the robots
     if(state.ParseFromArray(buffer->data(), buffer->size())){
+        has_state_ = true;
         if(state.has_detection()){
-            //drawing ball
-            if(state.detection().balls_size() != 0){
-                ball = state.detection().balls(0);
-            }else{
-                LOG << "ball not there! paying respects";
-            }
+            // updating blue bots positions
             if(state.detection().robots_blue_size() != 0){
                 pandav = state.detection().robots_blue();
                 for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
-                }
-                }else{
-                    LOG << "blue bots not there! paying respects";
-                }
-
-                //yellow bots
-                if(state.detection().robots_yellow_size() != 0){
-                    kaurav = state.detection().robots_yellow();
-                    for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
-                    }
-                }else{
-                    LOG << "yellow bots not there! paying respects";
+                    std::tuple<float, float> info(itr->x(), itr->y());
+                    blue_bot_info[itr->robot_id()] = info;
                 }
             }else{
-                //blue bots
-                if(state.detection().robots_blue_size() != 0){
-                    pandav = state.detection().robots_blue();
-                    for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
-                        scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
-                    }
-                }else{
-                    LOG << "blue bots not there! paying respects";
-                }
+                LOG << "blue bots not there! paying respects";
+            }
 
-                //yellow bots
-                if(state.detection().robots_yellow_size() != 0){
-                    kaurav = state.detection().robots_yellow();
-                    for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
-                        scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
-                    }
-                }else{
-                    LOG << "yellow bots not there! paying respects";
+            // updating yellow bots positions
+            if(state.detection().robots_yellow_size() != 0){
+                kaurav = state.detection().robots_yellow();
+                for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
+                    std::tuple<float, float> info(itr->x(), itr->y());
+                    yellow_bot_info[itr->robot_id()] = info;
                 }
-                bots_init_ = true;
-                setScene(scene);
+            }else{
+                LOG << "yellow bots not there! paying respects";
             }
 
         }
     }
-    emit send();
 }
 
 Drona::~Drona()

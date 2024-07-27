@@ -6,6 +6,7 @@
 #include <QUdpSocket>
 #include <QString>
 #include <QNetworkDatagram>
+#include <google/protobuf/repeated_field.h>
 
 class Dhanush: public QObject
 {
@@ -16,13 +17,14 @@ public:
 
 public slots:
     void send_velocity();
+    void handleState(QByteArray *buffer);
 
 private:
     sslsim::RobotCommand *command;
     QUdpSocket* socket;
     QNetworkDatagram datagram;
     QByteArray buffer;
-    void moveToPosition(int id, float x, float y);
+    void moveToPosition(Bot& robot, float x, float y);
 };
 
 #endif // DHANUSH_H

@@ -21,12 +21,21 @@ public:
     ~Drona();
     
 private:
+    struct Bot{
+        int x, y;
+        int id;
+        Bot(int x, int y,int id, bool is_blue=false): x(x), y(y), is_blue(is_blue), id(id){};
+        bool is_blue;
+    };
     QThread sender_thread;
     Dhanush *sender;
     SSL_DetectionBall ball;
     SSL_WrapperPacket state;
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
+    bool has_state_;
+    std::map<int, Bot> blue_bots;
+    std::map<int, Bot> yellow_bots;
 
 signals:
     void send();
