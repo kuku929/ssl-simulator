@@ -1,77 +1,79 @@
 #include "drona.h"
-#include "core/sslprotocols.h"
-#include "protobuf/ssl_wrapper.pb.h"
-#include "protobuf/sslsim.h"
 #include <QString>
 #include <QNetworkDatagram>
+#define LOG qDebug() << "[drona] : "
 
 using namespace sslsim;
-
-Drona::Drona(QObject* parent) : QObject(parent), socket(new QUdpSocket(this)){
-    // create a QUDP socket
-
-}
-
-Drona::~Drona(){
-    delete socket;
-}
-
-void Drona::onSocketError(QAbstractSocket::SocketError socketError)
+Drona::Drona(QObject* parent) : QObject(parent),
+    sender(new Dhanush())
 {
-    qDebug()<<"socket error occured and the error is : "<<socketError;
+    sender->moveToThread(&sender_thread);
+    connect(this, &Drona::send, sender, &Dhanush::send_velocity);
+    sender_thread.setObjectName("sender");
+    sender_thread.start();
+    // allocate the sender to a separate thread
+
 }
 
-void Drona::setPortAndAddress(int port, const QString& address) {
-    this->_port_sim = quint16(port);
-    this->_addr_sim.setAddress(address);
-}
+void Drona::handleState(QByteArray *buffer)
+{
+    //slot when message received by vyasa, draws the robots
+    if(state.ParseFromArray(buffer->data(), buffer->size())){
+        if(state.has_detection()){
+            //drawing ball
+            if(state.detection().balls_size() != 0){
+                ball = state.detection().balls(0);
+            }else{
+                LOG << "ball not there! paying respects";
+            }
+            if(state.detection().robots_blue_size() != 0){
+                pandav = state.detection().robots_blue();
+                for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
+                }
+                }else{
+                    LOG << "blue bots not there! paying respects";
+                }
 
-void Drona::run() {
-    RobotControl robot_control;
-    command = robot_control.add_robot_commands();
-    moveToPosition(0, 1.0f, 1.0f);
+                //yellow bots
+                if(state.detection().robots_yellow_size() != 0){
+                    kaurav = state.detection().robots_yellow();
+                    for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
+                    }
+                }else{
+                    LOG << "yellow bots not there! paying respects";
+                }
+            }else{
+                //blue bots
+                if(state.detection().robots_blue_size() != 0){
+                    pandav = state.detection().robots_blue();
+                    for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
+                        scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
+                    }
+                }else{
+                    LOG << "blue bots not there! paying respects";
+                }
 
-    //TODO: create the robot command and add RobotMoveCommand with wheel velocities
+                //yellow bots
+                if(state.detection().robots_yellow_size() != 0){
+                    kaurav = state.detection().robots_yellow();
+                    for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
+                        scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
+                    }
+                }else{
+                    LOG << "yellow bots not there! paying respects";
+                }
+                bots_init_ = true;
+                setScene(scene);
+            }
 
-    //TODO: Add function to move the bot
-
-    QByteArray dgram;
-    dgram.resize(robot_control.ByteSize());
-    robot_control.SerializeToArray(dgram.data(), dgram.size());
-    if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_BLUE_PORT) > -1) {
-        qDebug("[drona] : sent data");
+        }
     }
+    emit send();
 }
 
-
-void Drona::moveToPosition(int id, float x, float y) {
-    // Wheel and Global Velocities not yet supported, only Local Velocity supported
-    //TODO: Write interpreter for wheel velocity
-    command->set_id(id);
-    sslsim::RobotMoveCommand *move_command = command->mutable_move_command();
-    sslsim::MoveLocalVelocity *local_velocity = move_command->mutable_local_velocity();
-    local_velocity->set_forward(-10.0f);
-    local_velocity->set_angular(0.0f);
-    local_velocity->set_left(0.0f);
-}
-
-void Drona::sendCommand(float velX, int id) {
-    double zero = 0.0;
-    RobotControl packet;
-    bool yellow = false;
-    RobotCommand* command = packet.add_robot_commands();
-    command->set_id(id);
-    RobotMoveCommand *move_command = command->mutable_move_command();
-    MoveLocalVelocity *vel_command = move_command->mutable_local_velocity();
-
-    vel_command->set_forward(velX);
-    vel_command->set_left(0.0f);
-    vel_command->set_angular(0.0f);
-
-    QByteArray dgram;
-    dgram.resize(packet.ByteSize());
-    packet.SerializeToArray(dgram.data(), dgram.size());
-    if (socket->writeDatagram(dgram, this->_addr_sim, this->_port_sim) > -1) {
-        qDebug("send data");
-    }
+Drona::~Drona()
+{
+    delete sender;
+    sender_thread.quit();
+    sender_thread.wait();
 }

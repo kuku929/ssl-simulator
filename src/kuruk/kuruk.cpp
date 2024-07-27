@@ -10,9 +10,9 @@ Kuruk::Kuruk(QWidget *parent)
 {
     ui->setupUi(this);
     connect(vyasa, &Vyasa::recievedState, ui->kshetra, &Kshetra::handleState);
+    connect(vyasa, &Vyasa::recievedState, drona, &Drona::handleState);
     connect(ui->actionreset, &QAction::triggered, shunya, &Shunya::setup);
     // shunya->setup();
-    drona->run();
 }
 
 

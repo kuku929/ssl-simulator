@@ -1,10 +1,15 @@
 #ifndef DRONA_H
 #define DRONA_H
 
+#include "dhanush.h"
+#include "protobuf/ssl_detection.pb.h"
+#include "protobuf/ssl_wrapper.pb.h"
+#include "protobuf/ssl_detection.pb.h"
+#include <google/protobuf/repeated_field.h>
 #include <QObject>
 #include <QUdpSocket>
 #include <QString>
-#include "protobuf/ssl_simulation_robot_control.pb.h"
+#include <QThread>
 #include <QNetworkDatagram>
 
 class Drona : public QObject
@@ -12,27 +17,21 @@ class Drona : public QObject
 	Q_OBJECT
 public:
     explicit Drona(QObject *parent = 0);
-    void setPortAndAddress(int port, const QString& address);
-    void sendCommand(float velX, int id);
     void moveToPosition(int id, float x, float y);
     ~Drona();
     
-public slots:
-    void onSocketError(QAbstractSocket::SocketError socketError);
-    void run();
-
 private:
-    sslsim::RobotCommand *command;
-    quint16 _port;
-    quint16 _port_sim;
-    QHostAddress _addr_sim;
-	QHostAddress _addr;
-    QUdpSocket* socket;
-    QNetworkDatagram datagram;
-    QByteArray buffer;
-    
+    QThread sender_thread;
+    Dhanush *sender;
+    SSL_DetectionBall ball;
+    SSL_WrapperPacket state;
+    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
+    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
+
 signals:
-	// void configureBots();
+    void send();
+public slots:
+    void handleState(QByteArray *buffer);
 };
 
 #endif // DRONA_H
