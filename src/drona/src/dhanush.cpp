@@ -63,34 +63,3 @@ void Dhanush::moveToPosition(Bot& robot, float x, float y)
     local_velocity->set_angular(0.0f);
     local_velocity->set_left(kp * err_x);
 }
-
-void Dhanush:: handleState(QByteArray *buffer)
-{
-    if(state.ParseFromArray(buffer->data(), buffer->size())){
-        has_state_ = true;
-        if(state.has_detection()){
-            // updating blue bots positions
-            if(state.detection().robots_blue_size() != 0){
-                pandav = state.detection().robots_blue();
-                for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
-                    std::tuple<float, float> info(itr->x(), itr->y());
-                    blue_bot_info[itr->robot_id()] = info;
-                }
-            }else{
-                LOG << "blue bots not there! paying respects";
-            }
-
-            // updating yellow bots positions
-            if(state.detection().robots_yellow_size() != 0){
-                kaurav = state.detection().robots_yellow();
-                for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
-                    std::tuple<float, float> info(itr->x(), itr->y());
-                    yellow_bot_info[itr->robot_id()] = info;
-                }
-            }else{
-                LOG << "yellow bots not there! paying respects";
-            }
-
-        }
-    }
-}
