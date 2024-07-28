@@ -10,11 +10,28 @@
 
 //TODO: Struct for passing velocities together
 
+class BotPacket: public QObject
+{
+    Q_OBJECT
+
+public:
+    BotPacket(){};
+    ~BotPacket() = default;
+    float vel_x, vel_y, vel_angular;
+    int id;
+    bool is_blue;
+};
+
 class Dhanush: public QObject
 {
     Q_OBJECT
-public:
 
+public:
+    // struct bot_packet{
+    //     float vel_x, vel_y, vel_angular;
+    //     int id;
+    //     bool is_blue;
+    // };
     Dhanush();
     ~Dhanush();
 
@@ -30,14 +47,10 @@ private:
     QNetworkDatagram datagram;
     QByteArray buffer;
     void moveToPosition(float x, float y);
-    struct bot_packet{
-        float vel_x, vel_y, vel_angular;
-        int id;
-        bool is_blue;
-    };
 
 public slots:
-    void send_velocity(std::vector<bot_packet> packets);
+    // void send_velocity(std::vector<bot_packet> packet);
+    void send_velocity(BotPacket*packet);
 
 };
 
