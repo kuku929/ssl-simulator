@@ -67,7 +67,7 @@ void Shunya::setup()
     auto bot = control->mutable_teleport_robot();
 
     //initial position of the bots can be set here
-    setBotPosition(bot, 0, 0, 0);
+    setBotPosition(bot, 0, 1, 0);
     setBotPosition(bot, 1, 1,-1);
     setBotPosition(bot, 2, 1.5,0);
     setBotPosition(bot, 3, 1.5,1);

@@ -13,7 +13,6 @@
 #include <QNetworkDatagram>
 
 class BotPacket;
-class BotPackets;
 
 class Drona : public QObject
 {
@@ -26,21 +25,20 @@ public:
 private:
     struct Bot {
         int x, y;
-        int id;
-        Bot(int x, int y,int id, bool is_blue=false): x(x), y(y), is_blue(is_blue), id(id){};
+        Bot() = default;
+        Bot(int x, int y, bool is_blue=false): x(x), y(y), is_blue(is_blue){};
         bool is_blue;
     };
     QThread sender_thread;
     Dhanush *sender;
     BotPacket *packet;
-    BotPackets *packets;
     SSL_DetectionBall ball;
     SSL_WrapperPacket state;
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
     google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
     bool has_state_;
-    std::map<int, std::tuple<float, float>> blue_bot_info;
-    std::map<int, std::tuple<float, float>> yellow_bot_info;
+    std::map<int, Bot> blue_bot_info;
+    std::map<int, Bot> yellow_bot_info;
     void moveToPosition(float x, float y);
 
 signals:
