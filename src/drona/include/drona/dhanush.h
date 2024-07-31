@@ -8,23 +8,51 @@
 #include <QNetworkDatagram>
 #include <google/protobuf/repeated_field.h>
 
+//TODO: Struct for passing velocities together
+
+class BotPacket: public QObject
+{
+    Q_OBJECT
+
+public:
+    BotPacket(): vel_x(0.0f), vel_y(0.0f){};
+    BotPacket(int id, bool is_blue): vel_x(0.0f), vel_y(0.0f), id(id), is_blue(is_blue){};
+    ~BotPacket() = default;
+    float vel_x, vel_y, vel_angular;
+    int id;
+    bool is_blue;
+};
+
 class Dhanush: public QObject
 {
     Q_OBJECT
+
 public:
+    // struct bot_packet{
+    //     float vel_x, vel_y, vel_angular;
+    //     int id;
+    //     bool is_blue;
+    // };
     Dhanush();
     ~Dhanush();
 
-public slots:
-    void send_velocity();
-    void handleState(QByteArray *buffer);
-
 private:
+    struct Bot{
+        int x, y;
+        int id;
+        Bot(int x, int y,int id, bool is_blue=false): x(x), y(y), is_blue(is_blue), id(id){};
+        bool is_blue;
+    };
     sslsim::RobotCommand *command;
     QUdpSocket* socket;
     QNetworkDatagram datagram;
     QByteArray buffer;
-    void moveToPosition(Bot& robot, float x, float y);
+    void moveToPosition(float x, float y);
+
+public slots:
+    // void send_velocity(std::vector<bot_packet> packet);
+    void send_velocity(BotPacket*packet);
+
 };
 
 #endif // DHANUSH_H
