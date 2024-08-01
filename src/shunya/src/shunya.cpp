@@ -59,6 +59,26 @@ Shunya::~Shunya(){
     command = nullptr;
     socket = nullptr;
 }
+void Shunya::move_one_bot(int id, QPointF point, bool is_blue)
+{
+    //creating the message
+    command = new sslsim::SimulatorCommand();
+    sslsim::SimulatorControl *control = command->mutable_control();
+    auto bot = control->mutable_teleport_robot();
+
+    //initial position of the bots can be set here
+    setBotPosition(bot, id, point.x(), point.y(), 0, is_blue);
+    QByteArray dgram;
+    dgram.resize(command->ByteSize());
+    command->SerializeToArray(dgram.data(), dgram.size());
+
+    //sending message
+    if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_PORT) > -1) {
+        // LOG << "sent data";
+    }
+
+}
+
 void Shunya::setup()
 {
     //creating the message
@@ -67,7 +87,7 @@ void Shunya::setup()
     auto bot = control->mutable_teleport_robot();
 
     //initial position of the bots can be set here
-    setBotPosition(bot, 0, 1, 0);
+    setBotPosition(bot, 0, 0, 0);
     setBotPosition(bot, 1, 1,-1);
     setBotPosition(bot, 2, 1.5,0);
     setBotPosition(bot, 3, 1.5,1);

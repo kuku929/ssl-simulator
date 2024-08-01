@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsEllipseItem>
+#include "yodha.h"
 #include "protobuf/ssl_wrapper.pb.h"
 #include "protobuf/ssl_geometry.pb.h"
 #include "protobuf/ssl_detection.pb.h"
@@ -33,20 +34,11 @@ public slots:
     void handleState(QByteArray *buffer);
 
 private:
-    struct Bot{
-        Bot(QGraphicsScene *scene, QPoint &&point, float orientation,int id, bool is_blue=false);
-        void updatePosition(const QPoint &&point, float orientation);
-        bool is_blue;
-        int id;
-        QGraphicsEllipseItem *body_graphics;
-        QGraphicsEllipseItem *orientation_graphics;
-    };
-
     QGraphicsScene *scene;
     QPainter *painter;
     QGraphicsEllipseItem *scene_ball;
-    std::vector<Bot> scene_pandav;
-    std::vector<Bot> scene_kaurav;
+    std::vector<BlueBot> scene_pandav;
+    std::vector<YellowBot> scene_kaurav;
 
     SSL_WrapperPacket state;
     SSL_GeometryData field_geometry;

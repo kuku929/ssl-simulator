@@ -58,10 +58,10 @@ void Kshetra::handleState(QByteArray *buffer)
                 if(state.detection().robots_blue_size() != 0){
                     pandav = state.detection().robots_blue();
                     for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
-                        auto bot = std::find_if(scene_pandav.begin(), scene_pandav.end(), [&](Bot b){return b.id == itr->robot_id();});
+                        auto bot = std::find_if(scene_pandav.begin(), scene_pandav.end(), [&](BlueBot b){return b.id == itr->robot_id();});
                         if(bot == scene_pandav.end()){
                             LOG << "adding robot " << itr->robot_id();
-                            scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
+                            scene_pandav.push_back(BlueBot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
                             continue;
                         }
                         bot->updatePosition(transformToScene(QPoint(itr->x(), itr->y())), itr->orientation());
@@ -74,10 +74,10 @@ void Kshetra::handleState(QByteArray *buffer)
                 if(state.detection().robots_yellow_size() != 0){
                     kaurav = state.detection().robots_yellow();
                     for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
-                        auto bot = std::find_if(scene_kaurav.begin(), scene_kaurav.end(), [&](Bot b){return b.id == itr->robot_id();});
+                        auto bot = std::find_if(scene_kaurav.begin(), scene_kaurav.end(), [&](YellowBot b){return b.id == itr->robot_id();});
                         if(bot == scene_kaurav.end()){
                             LOG << "adding robot " << itr->robot_id();
-                            scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
+                            scene_kaurav.push_back(YellowBot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
                             continue;
                         }
                         bot->updatePosition(transformToScene(QPoint(itr->x(), itr->y())), itr->orientation());
@@ -90,7 +90,7 @@ void Kshetra::handleState(QByteArray *buffer)
                 if(state.detection().robots_blue_size() != 0){
                     pandav = state.detection().robots_blue();
                     for(auto itr=pandav.begin(); itr != pandav.end(); ++itr){
-                        scene_pandav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id(), true));
+                        scene_pandav.push_back(BlueBot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
                     }
                 }else{
                     LOG << "blue bots not there! paying respects";
@@ -100,7 +100,7 @@ void Kshetra::handleState(QByteArray *buffer)
                 if(state.detection().robots_yellow_size() != 0){
                     kaurav = state.detection().robots_yellow();
                     for(auto itr=kaurav.begin(); itr != kaurav.end(); ++itr){
-                        scene_kaurav.push_back(Bot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
+                        scene_kaurav.push_back(YellowBot(scene,transformToScene(QPoint(itr->x(), itr->y())), itr->orientation(), itr->robot_id()));
                     }
                 }else{
                     LOG << "yellow bots not there! paying respects";
@@ -151,26 +151,6 @@ void Kshetra::setBall(QPoint &&point)
     scene_ball = addCircle_(scene, point, BALL_RADIUS, Qt::black);
     ball_init_ = true;
 }
-
-Kshetra::Bot::Bot(QGraphicsScene *scene, QPoint &&point, float orientation, int id, bool is_blue):
-    is_blue(is_blue),
-    id(id)
-{
-    QColor bot_color;
-    if(is_blue) bot_color = Qt::blue;
-    else bot_color = Qt::yellow;
-    body_graphics = addCircle_(scene, point, ROBOT_RADIUS, bot_color);
-    orientation_graphics = addCircle_(scene, point+QPoint(ROBOT_RADIUS*cos(orientation)/2, ROBOT_RADIUS*sin(orientation)/2), ROBOT_RADIUS/2, Qt::black);
-
-}
-void Kshetra::Bot::updatePosition(const QPoint &&point, float orientation)
-{
-    //sets the robot at location point with radius and color
-    body_graphics->setRect(boundingSquare(point, ROBOT_RADIUS));
-    orientation_graphics->setRect(boundingSquare(point+QPoint(ROBOT_RADIUS*cos(orientation)/2, ROBOT_RADIUS*sin(orientation)/2), ROBOT_RADIUS/2));
-    return;
-}
-
 
 inline QGraphicsEllipseItem* addCircle_(QGraphicsScene *scene, const QPoint &center, int radius, QColor color)
 {

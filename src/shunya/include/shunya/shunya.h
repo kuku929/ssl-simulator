@@ -4,6 +4,7 @@
 #include "protobuf/ssl_simulation_control.pb.h"
 #include <QObject>
 #include <QUdpSocket>
+#include <QPointF>
 
 class Shunya : public QObject
 {
@@ -15,6 +16,7 @@ public:
 
 public slots:
     void setup();
+    void move_one_bot(int id, QPointF point, bool is_blue);
     void onSocketError(QAbstractSocket::SocketError socketError);
     void handleDatagrams();
 
