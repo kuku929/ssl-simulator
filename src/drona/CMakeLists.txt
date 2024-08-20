@@ -7,6 +7,7 @@ target_link_libraries(drona
     Qt5::Widgets
     shared::protobuf
     shared::core
+    katha::yodha
 )
 
 # this will allow the linker to find .h files in other packages which are linked

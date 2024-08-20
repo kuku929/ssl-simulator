@@ -5,29 +5,30 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include <QGraphicsEllipseItem>
-#include "yodha.h"
+#include "yodha/yodha.h"
 #include "protobuf/ssl_wrapper.pb.h"
 #include "protobuf/ssl_geometry.pb.h"
-#include "protobuf/ssl_detection.pb.h"
 #include <google/protobuf/repeated_field.h>
 
 class Bot;
 class Ball;
 
 //primitive graphics function for later use
-inline QGraphicsEllipseItem* addCircle_(QGraphicsScene *scene, const QPoint &center, int radius, QColor color);
-inline QGraphicsLineItem* addLine_(QGraphicsScene *scene, const QPoint &point1, const QPoint &point2, int width);
-inline QGraphicsEllipseItem* addArc_(QGraphicsScene *scene, const QPoint center, int radius, int width);
+inline QGraphicsEllipseItem* addCircle_(QGraphicsScene *scene, const QPointF &center, int radius, QColor color);
+inline QGraphicsLineItem* addLine_(QGraphicsScene *scene, const QPointF &point1, const QPointF &point2, int width);
+inline QGraphicsEllipseItem* addArc_(QGraphicsScene *scene, const QPointF center, int radius, int width);
 
 class Kshetra : public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit Kshetra(QWidget *parent=0);
-    inline QPoint transformToScene(QPoint &&point);
+    explicit Kshetra( QWidget *parent=0);
+    inline QPointF transformToScene(QPointF &&point);
+    void setPlayers(std::shared_ptr<std::vector<BlueBot>> pandav,std::shared_ptr<std::vector<YellowBot>> kaurav);
+    void setBall(std::shared_ptr<Ball> ball);
     void setGround(qint32 length, qint32 width);
     void setFieldLines(const SSL_GeometryFieldSize &field_info);
-    void setBall(QPoint &&point);
+    const QGraphicsScene *getScene(){ return scene; }
     ~Kshetra();
 
 public slots:
@@ -36,19 +37,20 @@ public slots:
 private:
     QGraphicsScene *scene;
     QPainter *painter;
-    QGraphicsEllipseItem *scene_ball;
-    std::vector<BlueBot> scene_pandav;
-    std::vector<YellowBot> scene_kaurav;
+    // you want to have the same object and share it with drona and kshetra right?? who updates it? kshetra obv but drona also uses it
+    // then drona does not need a handleState, does that make sense? yeah ig, you would want the updation to happen and you just have a pointer
+    // to the bots
+    std::shared_ptr<std::vector<BlueBot>> scene_pandav;
+    std::shared_ptr<std::vector<YellowBot>> scene_kaurav;
+    std::shared_ptr<Ball> scene_ball;
 
     SSL_WrapperPacket state;
     SSL_GeometryData field_geometry;
-    SSL_DetectionBall ball;
-    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
-    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
+    // google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
+    // google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
 
     bool has_state_;
-    bool background_init_ = false;
-    bool lines_init_ = false;
+    // use static bool!
     bool ball_init_ = false;
     bool bots_init_ = false;
 

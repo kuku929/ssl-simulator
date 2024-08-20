@@ -21,6 +21,7 @@ public:
     float vel_x, vel_y, vel_angular;
     int id;
     bool is_blue;
+    float kick_speed;
 };
 
 class Dhanush: public QObject

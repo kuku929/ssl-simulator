@@ -1,8 +1,9 @@
- #include "shunya.h"
+#include "shunya.h"
 #include "core/sslprotocols.h"
 #include "protobuf/ssl_simulation_error.pb.h"
 #include <QNetworkDatagram>
 #define LOG qDebug() << "[shunya] : "
+
 
 Shunya::Shunya(QObject *parent)
     : QObject{parent},

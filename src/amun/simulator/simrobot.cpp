@@ -28,6 +28,7 @@
 #include <cmath>
 #include <QDebug>
 
+#define LOG qDebug() << "[amun/simrobot.cpp] : "
 using namespace camun::simulator;
 
 const float MAX_SPEED = 1000;
@@ -320,6 +321,7 @@ bool SimRobot::handleMoveCommand()
 
 void SimRobot::begin(SimBall *ball, double time)
 {
+    // LOG << "begin called!";
     m_commandTime += time;
     m_inStandby = false;
     //m_inStandby = m_command.standby();
@@ -339,8 +341,10 @@ void SimRobot::begin(SimBall *ball, double time)
     }
 
     if (handleMoveCommand()) {
+        LOG << "oh no:/";
         return;
     }
+
 
     m_body->setDamping(0.7, 0.8);
 
@@ -360,6 +364,7 @@ void SimRobot::begin(SimBall *ball, double time)
     }
     // check if should kick and can do that
     if (m_isCharged && m_sslCommand.has_kick_speed() && m_sslCommand.kick_speed() > 0 && canKickBall(ball)) {
+        LOG << "kicking your balls!";
         float power = 0.0;
         const float angle = m_sslCommand.kick_angle()/180*M_PI;
         const float dirFloor = std::cos(angle);
@@ -577,6 +582,7 @@ bool SimRobot::canKickBall(SimBall *ball) const
             for (int j = 0; j < numContacts; ++j) {
                 btManifoldPoint &pt = contactManifold->getContactPoint(j);
                 if (pt.getDistance() < 0.001f * SIMULATOR_SCALE) {
+                    LOG << "can kick your balls!";
                     return true;
                 }
             }

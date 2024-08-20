@@ -651,7 +651,6 @@ void Simulator::moveBall(const sslsim::TeleportBall& ball)
 }
 
 void Simulator::moveRobot(const sslsim::TeleportRobot &robot) {
-    qDebug() << "[amun/simulator.cpp] : moveRobot called!";
     if (!robot.id().has_team()) return;
     if (!robot.id().has_id()) return;
     bool is_blue = robot.id().team() == gameController::Team::BLUE;

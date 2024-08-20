@@ -6,6 +6,7 @@
 #include "vyasa/vyasa.h"
 #include "shunya/shunya.h"
 #include "drona/drona.h"
+#include "yodha/yodha.h"
 
 class Kuruk : public QMainWindow
 {
@@ -19,6 +20,9 @@ private:
     Vyasa *vyasa;
     Shunya *shunya;
     Drona *drona;
+    std::shared_ptr<std::vector<BlueBot>> pandav;
+    std::shared_ptr<std::vector<YellowBot>> kaurav;
+    std::shared_ptr<Ball> ball;
 signals:
     // void configureBots();
 };

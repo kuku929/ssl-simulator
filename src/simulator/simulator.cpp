@@ -375,7 +375,6 @@ message RobotLimits {
 
 
 void SimulatorCommandAdaptor::handleDatagrams() {
-    qDebug() << "[simulator] : received intial setup!";
     while(m_server.hasPendingDatagrams()) {
         qint64 start = m_timer->currentTime();
         auto datagram = m_server.receiveDatagram();
@@ -397,7 +396,6 @@ void SimulatorCommandAdaptor::handleDatagrams() {
             continue;
         }
         if (simcom.has_control()) {
-            qDebug() << "[simulator] : packet has control commands";
             Command c{new amun::Command};
             auto* sslControl = c->mutable_simulator()->mutable_ssl_control();
             sslControl->CopyFrom(simcom.control());
@@ -411,7 +409,6 @@ void SimulatorCommandAdaptor::handleDatagrams() {
                 SCALE_UP(*teleportBall, vz);
             }
             for(sslsim::TeleportRobot& robot : *sslControl->mutable_teleport_robot()) {
-                qDebug() << "[simulator] : packet has robot data";
                 SCALE_UP(robot, x);
                 SCALE_UP(robot, y);
                 SCALE_UP(robot, v_x);
@@ -538,9 +535,9 @@ void RobotCommandAdaptor::handleDatagrams()
 
         for (const auto& command : control->robot_commands()) {
             if (command.has_move_command()) {
-                LOG << "recieved command";
+                // LOG << "recieved command";
                 const auto& moveCmd = command.move_command();
-                LOG << moveCmd.local_velocity().forward();
+                // LOG << moveCmd.local_velocity().forward();
                 if (moveCmd.has_wheel_velocity() || moveCmd.has_global_velocity()) {
                     sendRcr = true;
                     const std::string robotStr = "(Robot :" + std::to_string(command.id()) + ")";
@@ -667,7 +664,6 @@ void SimProxy::handleCommand(const Command &command) {
 
 int main(int argc, char* argv[])
 {
-    qDebug() << "[simulator] : setting up...";
     QCoreApplication app(argc, argv);
     app.setApplicationName("Simulator");
     app.setOrganizationName("ER-Force");

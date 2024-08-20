@@ -2,10 +2,7 @@
 #define DRONA_H
 
 #include "dhanush.h"
-#include "protobuf/ssl_detection.pb.h"
-#include "protobuf/ssl_wrapper.pb.h"
-#include "protobuf/ssl_detection.pb.h"
-#include <google/protobuf/repeated_field.h>
+#include "yodha/yodha.h"
 #include <QObject>
 #include <QUdpSocket>
 #include <QString>
@@ -20,6 +17,8 @@ class Drona : public QObject
 public:
     explicit Drona(QObject *parent = 0);
     void moveToPosition(int id, float x, float y);
+    void setPlayers(std::shared_ptr<std::vector<BlueBot>> pandav, std::shared_ptr<std::vector<YellowBot>> kaurav);
+    void setBall(std::shared_ptr<Ball> ball);
     ~Drona();
     
 private:
@@ -32,13 +31,10 @@ private:
     QThread sender_thread;
     Dhanush *sender;
     BotPacket *packet;
-    SSL_DetectionBall ball;
-    SSL_WrapperPacket state;
-    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> pandav;
-    google::protobuf::RepeatedPtrField<SSL_DetectionRobot> kaurav;
+    std::shared_ptr<std::vector<BlueBot>> pandav;
+    std::shared_ptr<std::vector<YellowBot>> kaurav;
+    std::shared_ptr<Ball> ball;
     bool has_state_;
-    std::map<int, Bot> blue_bot_info;
-    std::map<int, Bot> yellow_bot_info;
     void moveToPosition(float x, float y);
 
 signals:

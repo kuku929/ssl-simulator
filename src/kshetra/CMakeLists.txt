@@ -1,5 +1,5 @@
 # must include kshetra.h also so that auto moc compiler works
-add_library(kshetra src/kshetra.cpp include/kshetra/kshetra.h src/yodha.cpp include/kshetra/yodha.h)
+add_library(kshetra src/kshetra.cpp include/kshetra/kshetra.h)
 
 target_link_libraries(kshetra
     Qt5::Network
@@ -8,6 +8,7 @@ target_link_libraries(kshetra
     shared::protobuf
     shared::core
     katha::shunya
+    katha::yodha
 )
 
 # this will allow the linker to find .h files in other packages which are linked
