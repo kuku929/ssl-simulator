@@ -324,7 +324,7 @@ void SimRobot::begin(SimBall *ball, double time)
     // LOG << "begin called!";
     m_commandTime += time;
     m_inStandby = false;
-    //m_inStandby = m_command.standby();
+    // m_inStandby = m_command.standby();
 
     // after 0.1s without new command reset to stop
     if (m_commandTime > 0.1) {
@@ -341,7 +341,6 @@ void SimRobot::begin(SimBall *ball, double time)
     }
 
     if (handleMoveCommand()) {
-        LOG << "oh no:/";
         return;
     }
 
@@ -362,6 +361,10 @@ void SimRobot::begin(SimBall *ball, double time)
         m_isCharged = false;
         m_shootTime = 0.0;
     }
+
+    // if(m_specs.id() == 10){
+    //     LOG << m_isCharged << ' ' << m_sslCommand.has_kick_speed() << ' ' << m_sslCommand.kick_speed();
+    // }
     // check if should kick and can do that
     if (m_isCharged && m_sslCommand.has_kick_speed() && m_sslCommand.kick_speed() > 0 && canKickBall(ball)) {
         LOG << "kicking your balls!";

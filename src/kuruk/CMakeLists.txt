@@ -5,7 +5,8 @@ set(PROJECT_SOURCES
         kuruk.ui
 )
 
-add_executable(kuruk ${PROJECT_SOURCES})
+add_executable(kuruk ${PROJECT_SOURCES}
+    icons.qrc)
 
 target_link_libraries(kuruk
     Qt::Widgets

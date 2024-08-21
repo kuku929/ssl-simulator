@@ -81,7 +81,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="zoom-fit-best"/>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/edit-redo.svg</normaloff>:/icons/edit-redo.svg</iconset>
    </property>
    <property name="text">
     <string>Reset</string>
@@ -104,6 +105,8 @@
    <header>kshetra/kshetra.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
