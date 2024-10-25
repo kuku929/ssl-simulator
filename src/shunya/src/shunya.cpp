@@ -63,7 +63,7 @@ Shunya::~Shunya(){
 void Shunya::move_one_bot(int id, QPointF point, bool is_blue)
 {
     //creating the message
-    command = new sslsim::SimulatorCommand();
+    command->Clear();
     sslsim::SimulatorControl *control = command->mutable_control();
     auto bot = control->mutable_teleport_robot();
 
@@ -83,7 +83,7 @@ void Shunya::move_one_bot(int id, QPointF point, bool is_blue)
 void Shunya::setup()
 {
     //creating the message
-    command = new sslsim::SimulatorCommand();
+    command->Clear();
     sslsim::SimulatorControl *control = command->mutable_control();
     auto bot = control->mutable_teleport_robot();
 

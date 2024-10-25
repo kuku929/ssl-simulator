@@ -33,6 +33,9 @@
 #include <QtDebug>
 #include <QVector>
 
+
+#define LOG qDebug() << "[amun/simulator.cpp] : "
+
 using namespace camun::simulator;
 
 /* Friction and restitution between robots, ball and field: (empirical measurments)
@@ -201,6 +204,13 @@ Simulator::~Simulator()
 
 void Simulator::process()
 {
+    /*
+     * function called every tick ig
+     * pops last received RobotControl message( drona sends )and sets
+     * the bot velocities to that message( see setCommand ).
+     * then, simulates to current time
+     * finally, sends vision packet!
+     */
     Q_ASSERT(m_time != 0);
     const qint64 start_time = Timer::systemTime();
 
@@ -220,7 +230,6 @@ void Simulator::process()
     while (m_radioCommands.size() > 0 && std::get<1>(m_radioCommands.head()) < m_time) {
         RadioCommand commands = m_radioCommands.dequeue();
         for (const sslsim::RobotCommand& command : std::get<0>(commands)->robot_commands()) {
-
             if (m_data->robotCommandPacketLoss > 0 && m_data->rng.uniformFloat(0, 1) <= m_data->robotCommandPacketLoss) {
                 continue;
             }

@@ -37,21 +37,18 @@ void Drona::moveToPosition(int id, float x, float y)
     // calculating the x and y velocities
     QPointF relative_pos = pandav->at(id).mapFromScene(x, y);
     QPointF err = relative_pos;
-    // orientation err should be in [0, pi]
     float orientation_err = qAtan2(relative_pos.y(), relative_pos.x());
     orientation_err = relative_pos.y() > 0 ? fabs(orientation_err) : -fabs(orientation_err);
     float dist_err = pow(err.x()*err.x() + err.y()*err.y(), 0.5);
     float kp = 0.01;
-    float vel_y = kp * err.y();
-    float vel_x = kp * err.x();
     float vel_for = dist_err*kp;
     float vel_th = 2*orientation_err;
-    LOG << id << " : " << err.x() << ' '<< err.y();
+    // LOG << id << " : " << err.x() << ' '<< err.y();
     packet[id].vel_angular = vel_th;
     packet[id].vel_x = vel_for;
     packet[id].vel_y = 0.0f;
     packet[id].id = id;
-    packet[id].kick_speed = 1.0f;
+    packet[id].kick_speed = 5.0f;
 
 }
 
@@ -76,13 +73,8 @@ void Drona::handleState(QByteArray *buffer)
         packet[i].vel_y = 0.0f;
     }
     int bot_index = pandav->size() - 1;
-    // if(fabs(pandav->at(bot_index).getx()-450.0f) > 1.0f){
-    //     moveToPosition(bot_index, 450.0f, pandav->at(bot_index).gety());
-    // }
-    // else{
-        // moveToPosition(bot_index, ball->getPosition().x(), ball->getPosition().y());
-        moveToPosition(bot_index, 450.0f, 300.0f);
-    // }
+    moveToPosition(1, ball->getPosition().x(), ball->getPosition().y());
+    moveToPosition(0, ball->getPosition().x(), ball->getPosition().y());
     emit send(packet);
 }
 
