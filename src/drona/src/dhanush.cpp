@@ -17,6 +17,7 @@ Dhanush::~Dhanush(){
     delete socket;
 }
 
+
 void Dhanush::send_velocity(BotPacket* packet)
 {
     // this can lead to race conditions since memory is shared between two threads.
@@ -45,8 +46,13 @@ void Dhanush::send_velocity(BotPacket* packet)
     QByteArray dgram;
     dgram.resize(robot_control.ByteSize());
     robot_control.SerializeToArray(dgram.data(), dgram.size());
-    if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_BLUE_PORT) > -1) {
-
-        // LOG << "sent data";
+    if(packet->is_blue){
+        if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_BLUE_PORT) > -1) {
+            // for logging purposes
+        }
+    }else{
+        if (socket->writeDatagram(dgram, QHostAddress::LocalHost, SSL_SIMULATION_CONTROL_YELLOW_PORT) > -1) {
+            // for logging purposes
+        }
     }
 }

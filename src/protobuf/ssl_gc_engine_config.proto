@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package gameController;
+option go_package = "github.com/RoboCup-SSL/ssl-game-controller/internal/app/engine";
 
 // The engine config
 message Config {
@@ -15,6 +15,9 @@ message Config {
 
     // The list of available teams
     repeated string teams = 4;
+
+    // Enable or disable auto continuation
+    optional bool auto_continue = 5;
 
     // Behaviors for each game event
     enum Behavior {

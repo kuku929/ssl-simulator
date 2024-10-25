@@ -6,12 +6,14 @@ Kuruk::Kuruk(QWidget *parent)
     ui(new Ui::kuruk),
     vyasa(new Vyasa(this)),
     shunya(new Shunya(this)),
-    drona(new Drona(this))
+    drona(new Drona(this)),
+    vishnu(new Vishnu(this))
 {
     ui->setupUi(this);
     pandav = std::make_shared<std::vector<BlueBot>>();
     kaurav = std::make_shared<std::vector<YellowBot>>();
     ball = std::make_shared<Ball>(Qt::black, 5);
+
     // giving ownership of players and ball to kshetra and drona
     ui->kshetra->setPlayers(pandav, kaurav);
     ui->kshetra->setBall(ball);

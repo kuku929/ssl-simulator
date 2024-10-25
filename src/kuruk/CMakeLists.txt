@@ -14,6 +14,7 @@ target_link_libraries(kuruk
     katha::kshetra
     katha::shunya
     katha::drona
+    katha::vishnu
 )
 
 include(GNUInstallDirs)
