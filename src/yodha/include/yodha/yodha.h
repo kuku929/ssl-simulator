@@ -37,6 +37,9 @@ class YellowBot{
 public:
     YellowBot(){};
     YellowBot(QGraphicsScene *scene, QPointF &&point, float orientation,int id);
+    float getx(){ return x; }
+    float gety(){ return y; }
+    QPointF mapFromScene(float x, float y){ return body_graphics->mapFromScene(x, y); }
     void updatePosition(const QPointF &&point, float orientation);
     int id;
 private:

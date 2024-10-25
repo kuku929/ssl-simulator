@@ -117,7 +117,7 @@ void Kshetra::setGround(qint32 width, qint32 height)
     //sets the ground and field color with dimensions, the length received should be in mm
     static bool background_init_ = false;
     if(background_init_) return;
-    scene = new QGraphicsScene(QRectF(0,0,width/10, height/10), this);
+    scene->setSceneRect(QRectF(0,0,width/10, height/10));
     scene->setBackgroundBrush(QColor(0,100,50));
     scene->addRect(QRectF(0,0,width/10, height/10), QPen(), Qt::darkGreen);
     background_init_ = true;

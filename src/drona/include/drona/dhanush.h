@@ -1,6 +1,7 @@
 #ifndef DHANUSH_H
 #define DHANUSH_H
 
+
 #include "protobuf/ssl_simulation_robot_control.pb.h"
 #include <QObject>
 #include <QUdpSocket>
@@ -52,7 +53,8 @@ private:
 
 public slots:
     // void send_velocity(std::vector<bot_packet> packet);
-    void send_velocity(BotPacket*packet);
+    void send_velocity(BotPacket* packet);
+
 
 };
 

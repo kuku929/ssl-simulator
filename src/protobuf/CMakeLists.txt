@@ -47,16 +47,18 @@ set(PROTO_FILES
     ssl_game_event_2019.proto
     ssl_geometry.proto
     ssl_gc_api.proto
-    ssl_gc_ci.proto
+    # ssl_gc_ci.proto
     ssl_gc_change.proto
+    ssl_gc_common.proto
+    ssl_gc_geometry.proto
+    ssl_gc_game_event.proto
     ssl_gc_engine_config.proto
     ssl_gc_engine.proto
     ssl_gc_state.proto
+    ssl_gc_referee_message.proto
     ssl_mixed_team.proto
     ssl_referee.proto
     ssl_referee_game_event.proto
-    ssl_vision_detection_tracked.proto
-    ssl_vision_wrapper_tracked.proto
     ssl_simulation_robot_control.proto
     ssl_simulation_error.proto
     ssl_simulation_robot_feedback.proto

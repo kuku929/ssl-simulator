@@ -1,6 +1,8 @@
 #ifndef DRONA_H
 #define DRONA_H
 
+// #define SIMULATOR_MODE
+
 #include "dhanush.h"
 #include "yodha/yodha.h"
 #include <QObject>
@@ -9,6 +11,11 @@
 #include <QThread>
 #include <QNetworkDatagram>
 
+enum Team{
+    BLUE = 0,
+    YELLOW = 1
+};
+
 class BotPacket;
 
 class Drona : public QObject
@@ -16,7 +23,7 @@ class Drona : public QObject
 	Q_OBJECT
 public:
     explicit Drona(QObject *parent = 0);
-    void moveToPosition(int id, float x, float y);
+    void moveToPosition(int id, float x, float y, int team, BotPacket *packet);
     void setPlayers(std::shared_ptr<std::vector<BlueBot>> pandav, std::shared_ptr<std::vector<YellowBot>> kaurav);
     void setBall(std::shared_ptr<Ball> ball);
     ~Drona();
@@ -30,15 +37,17 @@ private:
     };
     QThread sender_thread;
     Dhanush *sender;
-    BotPacket *packet;
+    BotPacket *m_packet;
+#if defined SIMULATOR_MODE
+    BotPacket *m_blue_packet;
+    BotPacket *m_yellow_packet;
+#endif
     std::shared_ptr<std::vector<BlueBot>> pandav;
     std::shared_ptr<std::vector<YellowBot>> kaurav;
     std::shared_ptr<Ball> ball;
     bool has_state_;
-    void moveToPosition(float x, float y);
 
 signals:
-    // void send(std::vector<Dhanush::bot_packet> packet);
     void send(BotPacket* packet);
 public slots:
     void handleState(QByteArray *buffer);

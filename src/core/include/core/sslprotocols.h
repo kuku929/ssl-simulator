@@ -29,7 +29,6 @@
  * address:port
  */
 constexpr const char* SSL_GAME_CONTROLLER_ADDRESS = "224.5.23.1";
-constexpr const char* SSL_GAME_CONTROLLER_ADDRESS_LOCALHOST = "127.0.0.1";
 constexpr const uint16_t SSL_GAME_CONTROLLER_PORT = 10003;
 
 /*
