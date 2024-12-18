@@ -1,17 +1,17 @@
 #include "drona.h"
+#include "planner.h"
 #include <QString>
 #include <cmath>
 #include <QtMath>
 #include <QNetworkDatagram>
 #define LOG qDebug() << "[drona] : "
-#define BLUE_BOTS 11
-#define YELLOW_BOTS 11
+#define BLUE_BOTS 6
+#define YELLOW_BOTS 6
 
 using namespace sslsim;
 
 Drona::Drona(QObject* parent) : QObject(parent),
     sender(new Dhanush())
-    // packet(new BotPacket())
 {
     sender->moveToThread(&sender_thread);
     connect(this, &Drona::send, sender, &Dhanush::send_velocity);
@@ -65,6 +65,24 @@ void Drona::handleState(QByteArray *buffer)
 {
     // every time new position is received, recalculate velocity and send
     // updated velocity, SEX.
+
+    static int counter = 0;
+    std::vector<std::pair<double, double>> bot_pos;
+    for(int i=0; i < kaurav->size(); ++i){
+        bot_pos.push_back(make_pair(kaurav->at(i).getx(), kaurav->at(i).gety()));
+    }
+
+    std::pair<double, double> endpt;
+    endpt.first = 0.0f;
+    endpt.second = 100.0f;
+    LOG << counter << endl;
+    if(counter == 100){
+        vertices = plan_path(bot_pos, endpt, 0);
+        counter =0;
+    }
+    emit draw_graph(&vertices);
+    // LOG << vertices.size();
+    // }
 #if defined(SIMULATOR_MODE)
     // reseting packet, will make this better
     for(int i=0; i < BLUE_BOTS; ++i){
@@ -96,11 +114,13 @@ void Drona::handleState(QByteArray *buffer)
         m_packet[i].is_blue = false;
         m_packet[i].vel_x = 0.0f;
         m_packet[i].vel_y = 0.0f;
+        m_packet[i].vel_angular = 0.0f;
 
     }
-    moveToPosition(0, ball->getPosition().x(), ball->getPosition().y(), Team::YELLOW, m_packet);
+    if(vertices.size() > 0)moveToPosition(kaurav->front().id, vertices.back().x(), vertices.back().y(), Team::YELLOW, m_packet);
     emit send(m_packet);
 #endif //SIMULATOR MODE
+    counter++;
 }
 
 Drona::~Drona()

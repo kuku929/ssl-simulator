@@ -33,6 +33,7 @@ public:
 
 public slots:
     void handleState(QByteArray *buffer);
+    void handleGraph(std::vector<QPointF> *vertices);
 
 private:
     QGraphicsScene *scene;
@@ -43,6 +44,7 @@ private:
     std::shared_ptr<std::vector<BlueBot>> scene_pandav;
     std::shared_ptr<std::vector<YellowBot>> scene_kaurav;
     std::shared_ptr<Ball> scene_ball;
+    QVector<QGraphicsLineItem*> lines;
 
     SSL_WrapperPacket state;
     SSL_GeometryData field_geometry;

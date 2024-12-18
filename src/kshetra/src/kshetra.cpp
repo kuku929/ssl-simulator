@@ -6,6 +6,31 @@
 #define ROBOT_RADIUS 10
 #define LOG qDebug() << "[kshetra] : "
 
+inline QGraphicsEllipseItem* addCircle_(QGraphicsScene *scene, const QPointF &center, int radius, QColor color)
+{
+    //internal function to draw a circle
+    //the coordinate system of QGraphicsScene is based on top-left corner as origin and an inverted y-axis
+    QRectF bounding_rect = QRectF(center.x() - radius, center.y() - radius, 2*radius, 2*radius);
+    return scene->addEllipse(bounding_rect, QPen(), QBrush(color));
+}
+
+inline QGraphicsLineItem* addLine_(QGraphicsScene *scene, const QPointF &point1, const QPointF &point2, int width)
+{
+    return scene->addLine(QLineF(point1, point2), QPen(QBrush(Qt::white), width));
+}
+
+inline QGraphicsEllipseItem* addArc_(QGraphicsScene *scene, const QPointF center, int radius, int width)
+{
+    QRectF bounding_rect = QRectF(center.x() - radius, center.y() - radius, 2*radius, 2*radius);
+    return scene->addEllipse(bounding_rect, QPen(QBrush(Qt::white), width));
+}
+
+inline QPointF Kshetra::transformToScene(QPointF &&point)
+{
+    //converting to cm by dividing 10
+    return QPointF(point.x()/10 + scene->width()/2, point.y()/10 + scene->height()/2);
+}
+
 Kshetra::Kshetra(QWidget *parent):
     QGraphicsView(parent),
     painter(new QPainter()),
@@ -40,6 +65,17 @@ void Kshetra::setPlayers(std::shared_ptr<std::vector<BlueBot>> pandav,std::share
 void Kshetra::setBall(std::shared_ptr<Ball> ball)
 {
     scene_ball = ball;
+}
+
+void Kshetra::handleGraph(std::vector<QPointF> *vertices){
+    LOG << "drawing" << vertices->size();
+    if(vertices->size() == 0)return;
+    for(auto line: lines){scene->removeItem(line);}
+    lines.clear();
+    for(int i=0;i < vertices->size() - 1; ++i){
+        LOG << vertices->at(i);
+        lines.append(addLine_(this->scene, vertices->at(i), vertices->at(i+1), 1));
+    }
 }
 
 void Kshetra::handleState(QByteArray *buffer)
@@ -139,29 +175,4 @@ void Kshetra::setFieldLines(const SSL_GeometryFieldSize &field_info)
         addArc_(scene, transformToScene(vecToPoint(itr->center())), itr->radius()/10, itr->thickness());
     }
     lines_init_ = true;
-}
-
-inline QGraphicsEllipseItem* addCircle_(QGraphicsScene *scene, const QPointF &center, int radius, QColor color)
-{
-    //internal function to draw a circle
-    //the coordinate system of QGraphicsScene is based on top-left corner as origin and an inverted y-axis
-    QRectF bounding_rect = QRectF(center.x() - radius, center.y() - radius, 2*radius, 2*radius);
-    return scene->addEllipse(bounding_rect, QPen(), QBrush(color));
-}
-
-inline QGraphicsLineItem* addLine_(QGraphicsScene *scene, const QPointF &point1, const QPointF &point2, int width)
-{
-    return scene->addLine(QLineF(point1, point2), QPen(QBrush(Qt::white), width));
-}
-
-inline QGraphicsEllipseItem* addArc_(QGraphicsScene *scene, const QPointF center, int radius, int width)
-{
-    QRectF bounding_rect = QRectF(center.x() - radius, center.y() - radius, 2*radius, 2*radius);
-    return scene->addEllipse(bounding_rect, QPen(QBrush(Qt::white), width));
-}
-
-inline QPointF Kshetra::transformToScene(QPointF &&point)
-{
-    //converting to cm by dividing 10
-    return QPointF(point.x()/10 + scene->width()/2, point.y()/10 + scene->height()/2);
 }

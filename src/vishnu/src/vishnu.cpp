@@ -25,7 +25,9 @@ Vishnu::Vishnu(QObject *parent):
     // needed to listen to multicast packages apparently, spent too long on this ;)
     socket->joinMulticastGroup(m_addr);
     connect(socket, &QUdpSocket::readyRead, this, &Vishnu::handleDatagrams);
+    // Shunya shunya; shunya.setup();
 }
+
 void Vishnu::handleDatagrams()
 {
     auto datagram = socket->receiveDatagram();
@@ -34,8 +36,7 @@ void Vishnu::handleDatagrams()
     ref_msg.ParseFromArray(buffer.data(), buffer.size());
     if(ref_msg.stage() == Referee::NORMAL_FIRST_HALF){
         LOG << "STARTING GAME!";
-        Shunya shunya;
-        shunya.setup();
+        Shunya shunya; shunya.setup();
     }
 }
 

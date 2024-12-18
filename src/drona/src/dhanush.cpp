@@ -3,7 +3,7 @@
 #define LOG qDebug() << "[dhanush] : "
 // this method is very bad, need to think of a better way to get total bots and the format of the game,
 // probably some message from the simulator
-#define TOTAL_BOTS 22
+#define TOTAL_BOTS 10
 using namespace sslsim;
 
 Dhanush::Dhanush():

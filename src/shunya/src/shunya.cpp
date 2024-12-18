@@ -84,15 +84,16 @@ void Shunya::setup()
 {
     //creating the message
     command->Clear();
+    LOG << "setting up";
     sslsim::SimulatorControl *control = command->mutable_control();
     auto bot = control->mutable_teleport_robot();
 
     //initial position of the bots can be set here
-    setBotPosition(bot, 0, 0, 0);
-    setBotPosition(bot, 1, 1,-1);
-    setBotPosition(bot, 2, 1.5,0);
-    setBotPosition(bot, 3, 1.5,1);
-    setBotPosition(bot, 4, 1.5,-1);
+    setBotPosition(bot, 0, 0, 0, 0.0, false);
+    setBotPosition(bot, 1, 1,-1, 0.0, false);
+    setBotPosition(bot, 2, 1.5,0, 0.0, false);
+    setBotPosition(bot, 3, 1.5,1, 0.0, false);
+    setBotPosition(bot, 4, 1.5,-1, 0.0, false);
     QByteArray dgram;
     dgram.resize(command->ByteSize());
     command->SerializeToArray(dgram.data(), dgram.size());
@@ -112,6 +113,7 @@ void Shunya::setBotPosition(google::protobuf::RepeatedPtrField<sslsim::TeleportR
     }else{
         bot_id->set_team(gameController::YELLOW);
     }
+    LOG << bot_id->team();
     bot_id->set_id(id);
     //we cannot pass partial positions as of now, need to give all values
     bot_pos->set_x(x);

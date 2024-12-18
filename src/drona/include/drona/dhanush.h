@@ -16,8 +16,8 @@ class BotPacket: public QObject
     Q_OBJECT
 
 public:
-    BotPacket(): vel_x(0.0f), vel_y(0.0f){};
-    BotPacket(int id, bool is_blue): vel_x(0.0f), vel_y(0.0f), id(id), is_blue(is_blue){};
+    BotPacket(): vel_x(0.0f), vel_y(0.0f), vel_angular(0.0f), kick_speed(0.0f){};
+    BotPacket(int id, bool is_blue): vel_x(0.0f), vel_y(0.0f), vel_angular(0.0f), kick_speed(0.0f), id(id), is_blue(is_blue){};
     ~BotPacket() = default;
     float vel_x, vel_y, vel_angular;
     int id;

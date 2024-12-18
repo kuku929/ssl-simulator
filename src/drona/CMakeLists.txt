@@ -8,6 +8,7 @@ target_link_libraries(drona
     shared::protobuf
     shared::core
     katha::yodha
+    katha::voronoi
 )
 
 # this will allow the linker to find .h files in other packages which are linked

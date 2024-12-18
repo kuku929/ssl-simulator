@@ -5,6 +5,7 @@
 
 #include "dhanush.h"
 #include "yodha/yodha.h"
+#include <vector>
 #include <QObject>
 #include <QUdpSocket>
 #include <QString>
@@ -45,10 +46,12 @@ private:
     std::shared_ptr<std::vector<BlueBot>> pandav;
     std::shared_ptr<std::vector<YellowBot>> kaurav;
     std::shared_ptr<Ball> ball;
+    std::vector<QPointF> vertices;
     bool has_state_;
 
 signals:
     void send(BotPacket* packet);
+    void draw_graph(std::vector<QPointF> *vertices);
 public slots:
     void handleState(QByteArray *buffer);
 };

@@ -737,7 +737,11 @@ int main(int argc, char* argv[])
     auto* teamBlue = c->mutable_set_team_blue();
     auto* teamYellow = c->mutable_set_team_yellow();
     for(auto* team : {teamBlue, teamYellow}) {
-        for(int i=0; i < 11; ++i){
+        // abhiyaan: the number of bots are hard-coded!!!
+        // for now =, just change this value. Should
+        // TODO: implement a playground mode which
+        // allows one to set the number of bots and so on.
+        for(int i=0; i < 6; ++i){
             auto* robot = team->add_robot();
             robot->CopyFrom(ERForce);
             robot->set_id(i);
